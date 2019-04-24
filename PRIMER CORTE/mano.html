@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MANO </title>
+        <style>
+            html, body { margin: 0; padding: 0; overflow: hidden; }
+            #info {
+                position: absolute;
+                padding: 10px;
+                width: 100%;
+                text-align: center;
+                color: #FFFFFF;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+        </div>
+    <script src="js/three.min.js"></script>
+    <script>
+		var scene, aspect, camera, renderer;
+	
+		var startTime = Date.now();
+        
+ ///////////////////////////////////////////////////////////////////////////////////////////////////      
+        
+        // VARIABLES DE UBICACION PARA USAR EN TECLAS
+		var w_Key = false;
+		var s_Key = false;
+		var a_Key = false;
+		var d_Key = false;
+        var 5_Key = false;
+		var scaleUp = false;
+		var scaleDown = false;
+		var xAxis = true;
+		var yAxis = false;
+		var zAxis = false;
+        var thetaSum=0;
+		var positivo=false;
+        var arriba=false;
+        var abajo=false;
+        var r_Key=false;
+        var mrl=false;
+        var mrr=false;
+		
+		init();
+		animate();
+	
+		function init(){
+			scene = new THREE.Scene();
+			aspect = window.innerWidth / window.innerHeight;
+			camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+				  			
+			//EVENTOS DE TECLADO
+			
+			var onKeyDown = function ( event ) {
+				switch ( event.keyCode ) {
+					case 87: 
+						w_Key = true;
+						break;
+                    case 53:
+                        5_Key = true; 
+					case 83: 
+						s_Key = true;
+						break;
+					
+		              scaleUp = true;
+						break;
+					
+					case 65: 
+						a_Key = true;
+						break;
+					case 68: 
+						d_Key = true;
+						break;
+					case 88: // SELECCIONAR EJE X DE ROTACION
+						yAxis = false;
+						zAxis = false;
+						xAxis = true;
+						break;
+				    case 100: // SELECCIONAR EJE Y DE ROTACION
+						xAxis = false;
+						zAxis = false;
+						yAxis = true;
+						break;
+					case 90: // SELECCIONAR EJE Z DE 
+						xAxis = false;
+						yAxis = false;
+						zAxis = true;
+						break;
+                    case 89: 
+						arriba = true;
+						break;    
+                    case 84:
+						abajo= true ;
+						break;
+                    case 82:
+                        r_Key=true;
+                        break;
+            
+                   
+				}
+			};	  
+		  			
+			var onKeyUp = function ( event ) {
+				switch ( event.keyCode ) {
+					case 87: 
+						w_Key = false;
+						break;
+                    case 53: 
+                        5_Key = false;
+                    case 83: 
+						s_Key = false;
+						break;
+					case 65: 
+						a_Key = false;
+						break;
+					case 68: 
+						d_Key = false;
+						break;
+					 case 89: 
+						arriba = false;
+						break;    
+                    case 84:
+						abajo=false;
+						break;
+                    case 82:
+                        r_Key=false;
+                        break;
+                 
+				}
+			};	  	
+			
+			document.addEventListener( 'keydown', onKeyDown, false );
+			document.addEventListener( 'keyup', onKeyUp, false );
+			
+			//ELEMENTOS DE ESCENA
+							  
+			var size = 10;
+			var arrowSize = 1;
+			var divisions = size;
+			var origin = new THREE.Vector3( 0, 0, 0 );
+			var x = new THREE.Vector3( 1, 0, 0 );
+			var y = new THREE.Vector3( 0, 1, 0 );
+		  	var z = new THREE.Vector3( 0, 0, 1 );
+			var color1 = new THREE.Color( 0xFFFFFF );
+		  	var color2 = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA0000 );
+		  	var colorG = new THREE.Color( 0x00AA00 );
+		  	var colorB = new THREE.Color( 0x0000AA );
+			var colorRd = new THREE.Color( 0xAA6666 );
+		  	var colorGd = new THREE.Color( 0x66AA66 );
+		  	var colorBd = new THREE.Color( 0x6666AA );
+            var colorB = new THREE.Color( 0x333366 );
+            
+		  
+		  	//CREAR LAS GRILLAS PARA EL ESCENARIO
+		  	var axesHelper1 = new THREE.AxesHelper( size/10 );
+			var axesHelper2 = new THREE.AxesHelper( size/10 );
+			var axesHelper3 = new THREE.AxesHelper( size/10 );
+		  	var gridHelperXY = new THREE.GridHelper( size, divisions, color1, color1);
+		  	var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );
+		  	var gridHelperYZ = new THREE.GridHelper( size, divisions, color2, color2 );
+            
+            //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+                gridHelperXY.rotateOnWorldAxis ( x, THREE.Math.degToRad(90) );
+                gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+                gridHelperYZ.rotateOnWorldAxis ( z, THREE.Math.degToRad(90) );
+            
+            //CREAR LAS FLECHAS QUE INDICAN LOS EJES DE COORDENADAS 3D
+                var arrowX = new THREE.ArrowHelper( x, origin, arrowSize, colorR );
+                var arrowY = new THREE.ArrowHelper( y, origin, arrowSize, colorG );
+                var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
+            
+			// BRAZO
+            
+            geometry_Brazo = new THREE.CylinderGeometry( 0.5, 1, 3.5, 7);
+                for ( var i = 0; i < geometry_Brazo.faces.length; i++) { 
+                    if( geometry_Brazo.faces[i].normal.y !=  0x0000AA) { 
+                        geometry_Brazo.faces[i].color = 0x0000AA; 
+                    } 
+                }
+            // PALMA
+            
+                 geometry_Palma = new THREE.SphereGeometry( 1, 32, 32 );
+                for ( var i = 0; i < geometry_Palma.faces.length; i++) { 
+                    if( geometry_Palma.faces[i].normal.y !=  0x0000AA) { 
+                        geometry_Palma.faces[i].color = 0x0000AA; 
+                    } 
+                }
+            
+            
+            //   GEOMETRIA ARTICULACIONES
+                 geometry_Articulacion = new THREE.SphereGeometry( 5, 32, 32 );
+             for ( var i = 0; i < geometry_Articulacion.faces.length; i++) { 
+                    if( geometry_Articulacion.faces[i].normal.y !=  0x0000AA) { 
+                        geometry_Articulacion.faces[i].color = 0x0000AA; 
+                    } 
+                }
+        
+            
+            //DEDOS
+            
+             geometry_Dedos = new THREE.CylinderGeometry( .2, .2, 1, 10);
+                for ( var i = 0; i < geometry_Dedos.faces.length; i++) { 
+                    if( geometry_Dedos.faces[i].normal.y !=  0x0000AA) { 
+                        geometry_Dedos.faces[i].color = 0x0000AA; 
+                    } 
+                }
+            // Articulacion
+              geometry_Articulacion = new THREE.SphereGeometry( 0.3, 32, 32 );
+                for ( var i = 0; i < geometry_Palma.faces.length; i++) { 
+                    if( geometry_Palma.faces[i].normal.y !=  0x0000AA) { 
+                        geometry_Palma.faces[i].color = 0x0000AA; 
+                    } 
+                }
+            
+            
+            // CREAR LOS MATERIALES 
+             var material = new THREE.MeshNormalMaterial( { color: color1, vertexColors: THREE.FaceColors } );
+            
+            
+            
+            
+            
+            
+            //BRAZO
+            
+            Brazo = new THREE.Mesh(geometry_Brazo,material);
+            Brazo.applyMatrix( new THREE.Matrix4().makeTranslation(0,0,0) );
+            scene.add(Brazo);
+            
+            
+            
+            //PALMA
+            
+             palma = new THREE.Mesh(geometry_Palma,material);
+             palma.applyMatrix( new THREE.Matrix4().makeTranslation(0,2.5,0) );
+            
+              Brazo.add(palma);
+            
+            
+            
+            // DEDOS_PRIMER_CILINDRO
+            // Pulgar
+            
+            Dedo_Pulgar  = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Pulgar.applyMatrix( new THREE.Matrix4().makeTranslation(0,1.5,0) );
+            Dedo_Pulgar.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(77)));
+            Dedo_Pulgar.applyMatrix( new THREE.Matrix4().makeScale(1,1,0.6) );
+            palma.add(Dedo_Pulgar);
+            
+            // Indice
+            
+            Dedo_Indice = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Indice.applyMatrix( new THREE.Matrix4().makeTranslation(0,1.2,.5) );
+            Dedo_Indice.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Indice.applyMatrix( new THREE.Matrix4().makeScale(0.5,1,1) );
+            palma.add(Dedo_Indice);
+            
+            // Corazon
+            
+            Dedo_Corazon = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Corazon.applyMatrix( new THREE.Matrix4().makeTranslation(0,1.4,.2) );
+            Dedo_Corazon.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Corazon.applyMatrix( new THREE.Matrix4().makeScale(0.5,1,1) );
+            palma.add(Dedo_Corazon);
+            
+            //Anular
+           
+            Dedo_Anular = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Anular.applyMatrix( new THREE.Matrix4().makeTranslation(0,1.3,-.2) );
+            Dedo_Anular.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Anular.applyMatrix( new THREE.Matrix4().makeScale(0.5,1,1) );
+            palma.add(Dedo_Anular);
+            
+            //Meñique
+           
+            Dedo_Menique = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Menique.applyMatrix( new THREE.Matrix4().makeTranslation(0,1.2,-.5) );
+            Dedo_Menique.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Menique.applyMatrix( new THREE.Matrix4().makeScale(0.5,0.9,1) );
+            palma.add(Dedo_Menique);
+            
+            // DEDOS_PRIMER_ARTICULACION
+            //Pulgar
+            
+             Articulacion_Pulgar = new THREE.Mesh(geometry_Articulacion,material);
+             Articulacion_Pulgar.applyMatrix( new THREE.Matrix4().makeTranslation(0,.5,-.02) );
+             Dedo_Pulgar.add(Articulacion_Pulgar);
+            
+            //Indice
+            
+             Articulacion_Indice = new THREE.Mesh(geometry_Articulacion,material);
+             Articulacion_Indice.applyMatrix( new THREE.Matrix4().makeTranslation(-.1,.7,-.02) );
+             Dedo_Indice.add(Articulacion_Indice);  
+            
+            // Corazon
+            
+             Articulacion_Corazon= new THREE.Mesh(geometry_Articulacion,material);
+             Articulacion_Corazon.applyMatrix( new THREE.Matrix4().makeTranslation(-.1,.7,-.02) );
+             Dedo_Corazon.add(Articulacion_Corazon); 
+            
+            //Anular
+            
+             Articulacion_Anular= new THREE.Mesh(geometry_Articulacion,material);
+             Articulacion_Anular.applyMatrix( new THREE.Matrix4().makeTranslation(-.1,.6,-.02) );
+             Dedo_Anular.add(Articulacion_Anular); 
+            
+            // Meñique
+            
+             Articulacion_Menique= new THREE.Mesh(geometry_Articulacion,material);
+             Articulacion_Menique.applyMatrix( new THREE.Matrix4().makeTranslation(-.1,.7,-.02) );
+             Dedo_Menique.add(Articulacion_Menique); 
+            
+            
+            //DEDOS_SEGUNDO_CILINDRO
+            
+            // Pulgar
+            
+           /* Dedo_Pulgar_2  = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Pulgar_2.applyMatrix( new THREE.Matrix4().makeTranslation(0,1.5,0) );
+            Dedo_Pulgar_2.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(77)));
+            Dedo_Pulgar_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,0.6) );
+            Articulacion_Pulgar.add(Dedo_Pulgar_2);*/
+            
+            
+            Dedo_Pulgar_2  = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Pulgar_2.applyMatrix( new THREE.Matrix4().makeTranslation(0,0.5,0) );
+            Dedo_Pulgar_2.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Pulgar_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,0.6) );
+            Articulacion_Pulgar.add(Dedo_Pulgar_2);
+            
+            
+            
+            // Indice
+            
+            Dedo_Indice_2 = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Indice_2.applyMatrix( new THREE.Matrix4().makeTranslation(0,0.6,-0.0) );
+            Dedo_Indice_2.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Indice_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,1) );
+            Articulacion_Indice.add(Dedo_Indice_2);
+            
+            // Corazon
+            
+            Dedo_Corazon_2 = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Corazon_2.applyMatrix( new THREE.Matrix4().makeTranslation(0,0.6,-0.0) );
+            Dedo_Corazon_2.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Corazon_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,1) );
+            Articulacion_Corazon.add(Dedo_Corazon_2);
+            
+            // Anular
+             
+            Dedo_Anular_2 = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Anular_2.applyMatrix( new THREE.Matrix4().makeTranslation(0,0.6,-0.0) );
+            Dedo_Anular_2.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Anular_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,1) );
+            Articulacion_Anular.add(Dedo_Anular_2);
+            
+            // Meñique
+            
+            Dedo_Menique_2 = new THREE.Mesh(geometry_Dedos,material);
+            Dedo_Menique_2.applyMatrix( new THREE.Matrix4().makeTranslation(0,0.6,-0.0) );
+            Dedo_Menique_2.applyMatrix( new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(0)));
+            Dedo_Menique_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,1) );
+            Articulacion_Menique.add(Dedo_Menique_2);
+            
+		  	//AGREGAR A LA ESCENA
+                scene.add( gridHelperXZ );
+                scene.add( arrowX );	
+                scene.add( arrowY );	
+                scene.add( arrowZ );	
+  
+            //MOVER LA CAMARA
+			camera.position.x = 10;
+			camera.position.y = 10;	 
+		  	camera.position.z = 10;			
+		  	camera.lookAt( origin );
+			
+			renderer.render( scene, camera );
+			}
+            
+    function animate() {
+        render();
+        requestAnimationFrame( animate );
+    }
+        
+     
+    function render(){
+        var dtime = Date.now()-startTime;
+		var tx=0, ty=0, tz=0;	//Variables para traslacion
+		var sc = 1;				//Variable para escala
+		var theta=0;			//Variable para ángulo de rotacion de piernas
+		var sigma=0;			//Variable para ángulo de rotación de caderas
+		var sigma2=0;
+        var sigma3=0;
+        
+		if(thetaSum>90*Math.PI/180) {positivo = false;}
+		if(thetaSum<=-150*Math.PI/180) {positivo = true;}
+        
+        if(thetaSum>-150*Math.PI/180) {posi_1 = false;}
+		if(thetaSum<=90*Math.PI/180) {posi_1 = true;}
+		
+        if(arriba){ if(positivo)	theta = .1;
+			    else theta = -.1;            }
+        if(abajo){ if(posi_1)	theta = -.1;
+			     else theta = .1;            }
+        
+        thetaSum+=theta;
+        
+        
+		if(w_Key) { tx=0; ty=0; tz=.1;	}
+		if(s_Key) {	tx=0; ty=0; tz=-.1; }
+		
+		if(5_Key)	{Dedo_Corazon_2.rotateX(45);}
+       Dedo_Corazon_2.set(new AxisAngle4d)
+        if(r_Key) {sigma = 45}
+			
+		//MATRIZ DE TRASLACIÓN
+		var t = new THREE.Matrix4();
+		t.set( 	1, 0, 0, tx,
+				0, 1, 0, ty, 
+				0, 0, 1, tz,
+				0, 0, 0, 1	);
+		
+		Brazo.matrix.multiply(t); 	//APLICAR LA TRASLACIÓN A NIVEL LOCAL
+		
+		//ROTACIONES
+		var ct1 = Math.cos(theta);
+		var ct2 = Math.cos(-theta);
+        
+		var cs = Math.cos(sigma);
+        var ss = Math.sin(sigma);
+      
+        
+		var st1 = Math.sin(theta);
+		var st2 = Math.sin(-theta);
+        
+        var cso = Math.cos(sigma2);
+        var sso = Math.sin(sigma2);
+        
+        var cso7 = Math.cos(sigma3);
+        var sso7 = Math.sin(sigma3);
+        
+		
+		var r = new THREE.Matrix4();
+		var r1 = new THREE.Matrix4();
+		var r2 = new THREE.Matrix4();
+        var r3 = new THREE.Matrix4();
+        
+        //MATRIZ DE ROTACIÓN EN EJE Y
+		r7.set( 	   cso7,  0, sso7, 0,
+					0,  1,  0, 0, 
+				  -sso7,  0, cso7, 0,
+					0,  0,  0, 1 );	
+        
+        
+
+		//MATRIZ DE ROTACIÓN EN EJE Y
+		r.set( 	   cs,  0, ss, 0,
+					0,  1,  0, 0, 
+				  -ss,  0, cs, 0,
+					0,  0,  0, 1 );	
+       
+		//MATRICES DE ROTACIÓN EN EJE LOCAL DE PIERNAS	
+		r1.set( 	1,  0,  0, 0,
+					0, ct1,-st1, 0, 
+					0, st1, ct1, 0,
+					0,  0,  0, 1 );	
+		r2.set( 	1,  0,  0, 0,
+					0, ct2,-st2, 0, 
+					0, st2, ct2, 0,
+					0,  0,  0, 1 );		
+       
+		 r3.set(     cso, 0, sso, 0,
+                    0, 1, 0, 0, 
+                    -sso, 0, cso, 0,
+                    0, 0, 0, 1 );
+		//ROTACION EN UN EJE PARALELO
+	    var tempMatrix = new THREE.Matrix4();
+		tempMatrix.copyPosition( Brazo.matrix );
+        Brazo.applyMatrix( new THREE.Matrix4().getInverse(tempMatrix) );
+       
+		Brazo.applyMatrix(r);
+		Brazo.applyMatrix( tempMatrix );
+        
+		Dedo_Corazon_2.applyMatrix(r7);
+        
+   
+
+        
+        //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Corazon_2.matrix );
+        Dedo_Corazon_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Corazon.matrix );
+        Dedo_Corazon.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Anular.matrix );
+        Dedo_Anular.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Anular_2.matrix );
+        Dedo_Anular_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Indice.matrix );
+        Dedo_Indice_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Menique.matrix );
+        Dedo_Menique.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+      //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Menique_2.matrix );
+        Dedo_Menique_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Pulgar.matrix );
+        Dedo_Pulgar.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Pulgar_2.matrix );
+        Dedo_Pulgar_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+        //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Indice.matrix );
+        Dedo_Indice.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+     
+              
+     //ROTACION del brazo
+        var tempMatrixA = new THREE.Matrix4();
+        tempMatrixA.copyPosition( Dedo_Pulgar_2.matrix );
+        Dedo_Pulgar_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+        
+        //PARA MANO ROTACION
+       Dedo_Anular_2.applyMatrix(r3);
+       Dedo_Anular.applyMatrix(r3);
+       Dedo_Corazon.applyMatrix(r3);
+       Dedo_Corazon_2.applyMatrix(r3);
+       Dedo_Indice.applyMatrix(r3);
+       Dedo_Indice_2.applyMatrix(r3);
+       Dedo_Menique.applyMatrix(r3);
+       Dedo_Menique_2.applyMatrix(r3);
+       Dedo_Pulgar.applyMatrix(r3);
+       Dedo_Pulgar_2.applyMatrix(r3);
+        
+		//CAMARA ENFOCANDO ORIGEN
+        camera.lookAt( 0, 0, 0 );
+        renderer.render( scene, camera );
+    }
+    </script>
+  </body>
+</html>
