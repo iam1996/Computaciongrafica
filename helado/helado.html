@@ -1,13 +1,13 @@
  <!DOCTYPE html>
 <html>
   <head>
-    <title>Ej: Cilindro</title>
+    <title>HELADO</title>
     <style>
       html, body { margin: 0; padding: 0; overflow: hidden; }
     </style>
   </head>
   <body>
-    <script src="js/three.js"></script>
+    <script src="js/three.min.js"></script>
     <script>
 		var scene, aspect, camera, renderer;
 		var startTime = Date.now();
@@ -18,7 +18,7 @@
 		function init(){
 			scene = new THREE.Scene();
 			aspect = window.innerWidth / window.innerHeight;
-			camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+			camera = new THREE.PerspectiveCamera( 20, aspect, 0.1, 1000);
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
@@ -52,69 +52,67 @@
             var arrowY = new THREE.ArrowHelper( y, origin, arrowSize, colorG );
             var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
 			
-			//CREAR LAS GEOMETRÍAS
-            //Punto
-            var geoCilindro = new THREE.Geometry();
-            var zTemp = 0;
-            var res = 50.0;
-            for( var i = 0; i < res; i++){
-                for( var j = 0; j < res; j++){
-                    var punto = new THREE.Vector3();
-                    punto.x = 3.0   * Math.cos( ( i * 3.0 * Math.PI ) / res);
-                    punto.y = 3.0 * Math.cos( ( j * 3.0 * Math.PI ) / res) * Math.sin (( i * 3.0 * Math.PI ) / res);
-					punto.z = 3.0 * Math.sin( ( j * 3.0 * Math.PI ) / res) * Math.sin (( i * 3.0 * Math.PI ) / res) ;
-			
-                    geoCilindro.vertices.push( punto );
-                    if( punto.x >= 0){
+		var esfera_Geometry= new THREE.Geometry();
+		var res = 60;
+        var radio = 3;
+		for(var a=-180; a<res; a++){
+  		     for(var b=-360; b<res; b++){
+         		var Puntos = new THREE.Vector3();
+                 
+            Puntos.x = 	radio * Math.sin(Math.PI*b/res)*Math.sin(Math.PI*a/res);
+            Puntos.y =  radio * Math.cos(Math.PI*a/res);  
+			Puntos.z =  radio * Math.cos(Math.PI*b/res)*Math.sin(Math.PI*a/res);
+                 
+             esfera_Geometry.vertices.push(Puntos); 
+	         if( Puntos.x >= 0){
           	   break;
-                        
              }
-           
-                }
-                         //CREAR LOS MATERIALES            
-			
-            }
-			
-			var matPuntoE = new THREE.PointsMaterial( { color: 0xff3d14, size: 0.1 } );
+  		   }
+ 		}
+         
+		
+        	//CREAR LOS MATERIALES            
+			var material = new THREE.PointsMaterial( { color: 0x07a769, size: 0.1 } );
 			
 			//CREAR LOS OBJETOS
-			var cilindro = new THREE.Points( geoCilindro, matPuntoE );
-		 
-            
-            
-            
-            
-            var geoCi
-           lindro = new THREE.Geometry();
-            var zTemp = 0;
-            var res = 25.0;
-            for( var i = 0; i < res; i++){
-                for( var j = 0; j < res; j++){
-                    var punto = new THREE.Vector3();
-                    punto.x = 5.0 * i / res;
-                    punto.y = (3.0 * (res - i) / res ) * Math.cos( ( j * 3.0 * Math.PI ) / res)  ;
-                    punto.z = (3.0 * (res - i) / res ) * Math.sin( ( j * 3.0 * Math.PI ) / res) ;
-                    geoCilindro.vertices.push( punto );
-                }
-            }
+			var esfera_sem = new THREE.Points( esfera_Geometry, material );  
 			
 			//CREAR LOS MATERIALES            
-			var matPunto = new THREE.PointsMaterial( { color: 0xf8aa15, size: 0.1 } );
+			var matPunto = new THREE.PointsMaterial( { color: 0xFFFFFF, size: 1 } );
+			
+  var geoCilindro = new THREE.Geometry();
+            var zTemp = 0;
+            var res = 85;
+            for( var i = 0; i < res; i++){
+                for( var j = 0; j < res; j++){
+                    var punto = new THREE.Vector3();
+                    punto.x =5.5 * i / res;
+                    punto.y = (radio * (res - i) / res ) * Math.cos( ( j * radio * Math.PI ) / res) ;
+                    punto.z = (radio * (res - i) / res ) * Math.sin( ( j * radio * Math.PI ) / res) ;
+                    geoCilindro.vertices.push( punto );
+                }
+            } 
+            
+			
+			//CREAR LOS MATERIALES            
+			var matPunto = new THREE.PointsMaterial( { color: 0xcfd1af, size: 0.1 } );
 			
 			//CREAR LOS OBJETOS
-			var cilindro = new THREE.Points( geoCilindro, matPunto );
-            
-		  	//AGREGAR A LA ESCENA
-		  	//scene.add( gridHelperXY );
+			var cilindro = new THREE.Points( geoCilindro, matPunto );               
+
+            //AGREGAR A LA ESCENA
+		  	
             scene.add( gridHelperXZ );
 		  	scene.add( arrowX );	
 		  	scene.add( arrowY );	
 		  	scene.add( arrowZ );	
-			scene.add( cilindro );
-			scene.add(geoCilindro)
-			camera.position.x = 5;
-			camera.position.y = 10;	 
-		  	camera.position.z = 10;
+			scene.add( esfera_sem );
+         
+            scene.add( cilindro );
+			
+			camera.position.x = 0;
+			camera.position.y = 20;	 
+		  	camera.position.z = 20;
 			
 		  	camera.lookAt( origin );
 			}
@@ -126,8 +124,7 @@
     
     function render(){
         var dtime = Date.now()-startTime;
-        camera.position.x = 10*Math.cos(dtime/10000);
-        camera.position.z = 10*Math.sin(dtime/10000);
+   
         camera.lookAt( 0, 0, 0 );
         renderer.render( scene, camera );
     }

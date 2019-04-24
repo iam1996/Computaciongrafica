@@ -64,66 +64,71 @@
 			
 			//CREAR LAS GEOMETRÍAS
             // Base
-            var boxGeometry_1 = new THREE.BoxGeometry(9,6, 6 );
-          var boxGeometry_1_resta_1 = new THREE.BoxGeometry( 6,10, 5 );
-         var boxGeometry_1_resta_2 = new THREE.BoxGeometry( 1,5, 2 );
+            var boxGeometry_1 = new THREE.BoxGeometry(15,8, 2 );
+          //var boxGeometry_1_resta_1 = new THREE.BoxGeometry( 6,10, 5 );
+         //var boxGeometry_1_resta_2 = new THREE.BoxGeometry( 1,5, 2 );
            
-             var cylinderGeometry_1_intersect = new THREE.CylinderGeometry( 2.5, 2.5, 1, 30 );
-             var cylinderGeometry_1_resta_7 = new THREE.CylinderGeometry( 0.5, 0.5, 5, 30 );
+             var cylinderGeometry_1_u = new THREE.CylinderGeometry( 4, 4, 3, 30 );
+            cylinderGeometry_1_resta_7 = new THREE.CylinderGeometry( 2.5, 2.5, 5, 30 );
+            
+            
             
  
             
      
             
         //Cilindro plano
-            var boxGeometry_2 = new THREE.BoxGeometry( 4, 8, 3 );
-var cylinderGeometry_w = new THREE.CylinderGeometry( 1, 1, 8, 30  );   
+           // var boxGeometry_2 = new THREE.BoxGeometry( 4, 8, 3 );
+cylinderGeometry_w = new THREE.CylinderGeometry( 2, 2, 3, 30  );   
    
- var boxGeometry_2_resta_2 = new THREE.BoxGeometry( 5.5, 4, 4 );           
-       var boxGeometry_2_resta_3 = new THREE.BoxGeometry( 5, 10, 3  );           
+ //var boxGeometry_2_resta_2 = new THREE.BoxGeometry( 5.5, 4, 4 );           
+var boxGeometry_2_resta_3 = new THREE.BoxGeometry( 5, 25, 10  );           
                   
 
 
 			//CREAR LOS MATERIALES
-            var material1 = new THREE.MeshStandardMaterial( { color: colorR, metalness: 0.5, roughness: 0.1 } );
-			var material2 = new THREE.MeshStandardMaterial( { color: colorG, metalness: 0.5, roughness: 0.1, transparent:true, opacity: 0.5  } );
-            var material3 = new THREE.MeshStandardMaterial( { color: colorB, metalness: 0.5, roughness: 0.1, transparent:true, opacity: 0.5  });                                              
+            var material1 = new THREE.MeshStandardMaterial( { color: 0x008451, metalness: 0.5, roughness: 0.1 } );
+			var material2 = new THREE.MeshStandardMaterial( { color: 0x008451, metalness: 0.5, roughness: 0.1, transparent:true, opacity: 0.5  } );
+            var material3 = new THREE.MeshStandardMaterial( { color: 0x008451, metalness: 0.5, roughness: 0.1, transparent:true, opacity: 0.5  });                                              
                                                           
 			
 			//CREAR LAS MALLAS
             
             // Base
 			var cube_1 = new THREE.Mesh( boxGeometry_1 );
+            cube_1.translateX(3);
     
            
-            var cube_1_resta_1 = new THREE.Mesh( boxGeometry_1_resta_1 );
-            cube_1_resta_1.rotateX(THREE.Math.degToRad(90));
-            cube_1_resta_1.rotateZ(THREE.Math.degToRad(90));
-            cube_1_resta_1.translateY(-1.5);
-            cube_1_resta_1.translateZ(-0.5);
+            //var cube_1_resta_1 = new THREE.Mesh( boxGeometry_1_resta_1 );
+            //cube_1_resta_1.rotateX(THREE.Math.degToRad(90));
+            //cube_1_resta_1.rotateZ(THREE.Math.degToRad(90));
+            //cube_1_resta_1.translateY(-1.5);
+            //cube_1_resta_1.translateZ(-0.5);
             
-            var cube_1_resta_2 = new THREE.Mesh( boxGeometry_1_resta_2 );
+            /*var cube_1_resta_2 = new THREE.Mesh( boxGeometry_1_resta_2 );
             cube_1_resta_2.rotateX(THREE.Math.degToRad(90));
             cube_1_resta_2.rotateZ(THREE.Math.degToRad(90));
             cube_1_resta_2.translateY(-5);
             cube_1_resta_2.translateZ(3);
-            cube_1_resta_2.translateX(0);
+            cube_1_resta_2.translateX(0); */
             
             
-            var cylinder_int_1 = new THREE.Mesh( cylinderGeometry_1_intersect); 
-            cylinder_int_1.rotateX(THREE.Math.degToRad(90));
+            var cylinder_int_1 = new THREE.Mesh( cylinderGeometry_1_u); 
+            
             cylinder_int_1.rotateZ(THREE.Math.degToRad(90));
-            cylinder_int_1.translateY(4.0);
-            cylinder_int_1.translateZ(-0.5);
-            cylinder_int_1.translateX(0.5);
-         
+            cylinder_int_1.rotateX(THREE.Math.degToRad(90));
+            cylinder_int_1.translateY(0.0);
+            cylinder_int_1.translateZ(-5);
+            cylinder_int_1.translateX(0);
+        
             var cylinder_1_resta_7 = new THREE.Mesh( cylinderGeometry_1_resta_7); 
             
-            cylinder_1_resta_7.translateY(-1);
+            cylinder_1_resta_7.translateY(0);
             cylinder_1_resta_7.translateZ(0);
-            cylinder_1_resta_7.translateX(2.5);
-            
-            
+            cylinder_1_resta_7.translateX(-5);
+            cylinder_1_resta_7.rotateZ(THREE.Math.degToRad(90));
+            cylinder_1_resta_7.rotateX(THREE.Math.degToRad(90))
+             /*
             //Cilindro Plano
          var cube_2 = new THREE.Mesh( boxGeometry_2 );
             cube_2.rotateX(THREE.Math.degToRad(90));
@@ -131,13 +136,14 @@ var cylinderGeometry_w = new THREE.CylinderGeometry( 1, 1, 8, 30  );
             cube_2.translateY(-0.5);
             cube_2.translateZ(0.5);
             cube_2.translateX(-1.0);
+            */
             
           var cylinder_2_union_1 = new THREE.Mesh( cylinderGeometry_w );
-            cylinder_2_union_1.translateY(1);
-            cylinder_2_union_1.translateX(-1.5);
+            cylinder_2_union_1.translateY(-2.5);
+            cylinder_2_union_1.translateX(9.0);
             cylinder_2_union_1.translateZ(0);
             cylinder_2_union_1.rotateX(THREE.Math.degToRad(90));
-
+ /*
         
             
             var cube_2_resta_2 = new THREE.Mesh(boxGeometry_2_resta_2 );
@@ -146,71 +152,71 @@ var cylinderGeometry_w = new THREE.CylinderGeometry( 1, 1, 8, 30  );
             cube_2_resta_2.translateY(-2.5);
             cube_2_resta_2.translateZ(0);
             cube_2_resta_2.translateX(1);
-      
+        */
             var cube_2_resta_3 = new THREE.Mesh(boxGeometry_2_resta_3 );
 
-            cube_2_resta_3.rotateZ(THREE.Math.degToRad(45));
+            cube_2_resta_3.rotateZ(THREE.Math.degToRad(70));
            
-            cube_2_resta_3.translateY(-1.5);
+            cube_2_resta_3.translateY(1.5);
             cube_2_resta_3.translateZ(-2);
-            cube_2_resta_3.translateX(4.3);
-        
+            cube_2_resta_3.translateX(5.2);
+      
         
 			
 			//CONVERTIR A CSG
 			//Base
             var box_1CSG = THREE.CSG.fromMesh( cube_1 );
-            var box_1_resta_1CSG = THREE.CSG.fromMesh( cube_1_resta_1 );
-            var box_1_resta_2CSG = THREE.CSG.fromMesh( cube_1_resta_2 );
-            var cylinder_1_intersect_CSG = THREE.CSG.fromMesh( cylinder_int_1);
+            //var box_1_resta_1CSG = THREE.CSG.fromMesh( cube_1_resta_1 );
+            //var box_1_resta_2CSG = THREE.CSG.fromMesh( cube_1_resta_2 );
+            var cylinder_1_u_CSG = THREE.CSG.fromMesh( cylinder_int_1);
             var cylinder_1_resta_7CSG = THREE.CSG.fromMesh( cylinder_1_resta_7 );
          
             //Cilindro Plano
-            var box_2CSG = THREE.CSG.fromMesh( cube_2 );
-           var cylinder_2_union_1CSG = THREE.CSG.fromMesh( cylinder_2_union_1);
-            var box_2_resta_2CSG = THREE.CSG.fromMesh( cube_2_resta_2 );
+          //  var box_2CSG = THREE.CSG.fromMesh( cube_2 );
+            cylinder_2_union_1CSG = THREE.CSG.fromMesh( cylinder_2_union_1);
+            //var box_2_resta_2CSG = THREE.CSG.fromMesh( cube_2_resta_2 );
             var box_2_resta_3CSG = THREE.CSG.fromMesh( cube_2_resta_3 );
           
 		
 
             //APLICAR LAS OPERACIONES
 
-            var resultado_final = box_1CSG.subtract(box_1_resta_1CSG).union(cylinder_1_intersect_CSG).subtract(cylinder_1_resta_7CSG).subtract(box_1_resta_2CSG).union(box_2CSG).subtract(box_2_resta_2CSG).subtract(cylinder_2_union_1CSG).subtract(box_2_resta_3CSG);
+            var resultado_final = box_1CSG.union(cylinder_1_u_CSG).subtract(cylinder_1_resta_7CSG).union(cylinder_2_union_1CSG).subtract(box_2_resta_3CSG) ;
             
         
 			//CONVERTIR A MALLA DE THREE JS NUEVAMENTE
-           var c2t1 = THREE.CSG.toMesh(resultado_final );
-            c2t1.translateX(-15);
+         var c2t1 = THREE.CSG.toMesh(resultado_final );
+            c2t1.translateX(30);
        
            
            //Base 
 			cube_1.material = material1;
-            cube_1_resta_1.material = material2;
-            cube_1_resta_2.material = material2;
+            //cube_1_resta_1.material = material2;
+            //cube_1_resta_2.material = material2;
             cylinder_int_1.material = material3;
             cylinder_1_resta_7.material = material3;
             
            //Cilindro Plano 
-           cube_2.material = material3;
-         cylinder_2_union_1.material = material1;
-            cube_2_resta_3.material = material2;
+           //cube_2.material = material3;
+       cylinder_2_union_1.material = material1;
+     cube_2_resta_3.material = material2;
 
             //Pieza  Final
-            c2t1.material = material1; 
+         c2t1.material = material1; 
     
             
 			//AGREGAR A LA ESCENA LOS DIFERENTES ELEMENTOS
             //Base
          scene.add( cube_1 );
-           scene.add( cube_1_resta_1 ); 
-            scene.add( cube_1_resta_2 ); 
-             scene.add( cylinder_int_1 ); 
+           //////////////scene.add( cube_1_resta_1 ); 
+            ////////////scene.add( cube_1_resta_2 ); 
+            scene.add( cylinder_int_1 ); 
             scene.add( cylinder_1_resta_7 ); 
             
             // Cilindro Plano 
-            scene.add( cube_2 ); 
-            scene.add( cylinder_2_union_1 );  
-           scene.add( cube_2_resta_3 );
+           ////// scene.add( cube_2 ); 
+        scene.add( cylinder_2_union_1 );  
+         scene.add( cube_2_resta_3 );
             //Pieza Final 
             scene.add( c2t1);
           

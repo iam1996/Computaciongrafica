@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+    // integrantes : Edwin Romero, María Paula León , Ivan //Montesino
+//A, D : Movimiento muñeca
+// Flechas arriba abajo : movimiento dedos
     <head>
         <title>MANO </title>
         <style>
@@ -14,7 +17,9 @@
         </style>
     </head>
     <body>
-        <div>
+        <div id="info">Muñeca<br/>
+            A, D : Movimiento muñeca<br/>
+            Flechas arriba abajo : movimiento dedos<br/>
         </div>
     <script src="js/three.min.js"></script>
     <script>
@@ -22,14 +27,13 @@
 	
 		var startTime = Date.now();
         
- ///////////////////////////////////////////////////////////////////////////////////////////////////      
+////////////////////////////////////////////////////     
         
         // VARIABLES DE UBICACION PARA USAR EN TECLAS
 		var w_Key = false;
 		var s_Key = false;
 		var a_Key = false;
 		var d_Key = false;
-        var 5_Key = false;
 		var scaleUp = false;
 		var scaleDown = false;
 		var xAxis = true;
@@ -53,7 +57,8 @@
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
-				  			
+////////////////////////////////////////////////////
+            
 			//EVENTOS DE TECLADO
 			
 			var onKeyDown = function ( event ) {
@@ -61,8 +66,6 @@
 					case 87: 
 						w_Key = true;
 						break;
-                    case 53:
-                        5_Key = true; 
 					case 83: 
 						s_Key = true;
 						break;
@@ -91,10 +94,10 @@
 						yAxis = false;
 						zAxis = true;
 						break;
-                    case 89: 
+                    case 38: 
 						arriba = true;
 						break;    
-                    case 84:
+                    case 40:
 						abajo= true ;
 						break;
                     case 82:
@@ -110,8 +113,6 @@
 					case 87: 
 						w_Key = false;
 						break;
-                    case 53: 
-                        5_Key = false;
                     case 83: 
 						s_Key = false;
 						break;
@@ -121,10 +122,10 @@
 					case 68: 
 						d_Key = false;
 						break;
-					 case 89: 
+					 case 38: 
 						arriba = false;
 						break;    
-                    case 84:
+                    case 38:
 						abajo=false;
 						break;
                     case 82:
@@ -137,7 +138,14 @@
 			document.addEventListener( 'keydown', onKeyDown, false );
 			document.addEventListener( 'keyup', onKeyUp, false );
 			
-			//ELEMENTOS DE ESCENA
+////////////////////////////////////////////////////////
+            
+   
+            
+////////////////////////////////////////////////////////
+            
+            
+            //ELEMENTOS DE ESCENA
 							  
 			var size = 10;
 			var arrowSize = 1;
@@ -368,13 +376,23 @@
             Dedo_Menique_2.applyMatrix( new THREE.Matrix4().makeScale(1,1,1) );
             Articulacion_Menique.add(Dedo_Menique_2);
             
+        
+            
+            
+            
+            
+            
+            
 		  	//AGREGAR A LA ESCENA
                 scene.add( gridHelperXZ );
                 scene.add( arrowX );	
                 scene.add( arrowY );	
                 scene.add( arrowZ );	
-  
-            //MOVER LA CAMARA
+                    
+                
+			
+			
+			//MOVER LA CAMARA
 			camera.position.x = 10;
 			camera.position.y = 10;	 
 		  	camera.position.z = 10;			
@@ -382,13 +400,18 @@
 			
 			renderer.render( scene, camera );
 			}
-            
+    
+        
+        
+        
+        
+        
     function animate() {
         render();
         requestAnimationFrame( animate );
     }
         
-     
+       
     function render(){
         var dtime = Date.now()-startTime;
 		var tx=0, ty=0, tz=0;	//Variables para traslacion
@@ -396,9 +419,9 @@
 		var theta=0;			//Variable para ángulo de rotacion de piernas
 		var sigma=0;			//Variable para ángulo de rotación de caderas
 		var sigma2=0;
-        var sigma3=0;
         
-		if(thetaSum>90*Math.PI/180) {positivo = false;}
+        
+		if(thetaSum>10*Math.PI/180) {positivo = false;}
 		if(thetaSum<=-150*Math.PI/180) {positivo = true;}
         
         if(thetaSum>-150*Math.PI/180) {posi_1 = false;}
@@ -406,8 +429,8 @@
 		
         if(arriba){ if(positivo)	theta = .1;
 			    else theta = -.1;            }
-        if(abajo){ if(posi_1)	theta = -.1;
-			     else theta = .1;            }
+       // if(abajo){ if(positivo)	theta = -.1;
+		//	     else theta = .1;            }
         
         thetaSum+=theta;
         
@@ -415,9 +438,12 @@
 		if(w_Key) { tx=0; ty=0; tz=.1;	}
 		if(s_Key) {	tx=0; ty=0; tz=-.1; }
 		
-		if(5_Key)	{Dedo_Corazon_2.rotateX(45);}
-       Dedo_Corazon_2.set(new AxisAngle4d)
-        if(r_Key) {sigma = 45}
+		if(d_Key)	{sigma = -.1;}
+		if(a_Key)   {sigma = .1;}
+        if(r_Key)   {sigma2=-.1;}
+        //if(abajo)   {sigma2=  .1 ;}        
+      
+		
 			
 		//MATRIZ DE TRASLACIÓN
 		var t = new THREE.Matrix4();
@@ -426,7 +452,9 @@
 				0, 0, 1, tz,
 				0, 0, 0, 1	);
 		
-		Brazo.matrix.multiply(t); 	//APLICAR LA TRASLACIÓN A NIVEL LOCAL
+		Brazo.matrix.multiply(t); 
+        Articulacion_Indice.matrix.multiply(t);
+        //APLICAR LA TRASLACIÓN A NIVEL LOCAL
 		
 		//ROTACIONES
 		var ct1 = Math.cos(theta);
@@ -442,21 +470,11 @@
         var cso = Math.cos(sigma2);
         var sso = Math.sin(sigma2);
         
-        var cso7 = Math.cos(sigma3);
-        var sso7 = Math.sin(sigma3);
-        
 		
 		var r = new THREE.Matrix4();
 		var r1 = new THREE.Matrix4();
 		var r2 = new THREE.Matrix4();
         var r3 = new THREE.Matrix4();
-        
-        //MATRIZ DE ROTACIÓN EN EJE Y
-		r7.set( 	   cso7,  0, sso7, 0,
-					0,  1,  0, 0, 
-				  -sso7,  0, cso7, 0,
-					0,  0,  0, 1 );	
-        
         
 
 		//MATRIZ DE ROTACIÓN EN EJE Y
@@ -470,84 +488,42 @@
 					0, ct1,-st1, 0, 
 					0, st1, ct1, 0,
 					0,  0,  0, 1 );	
-		r2.set( 	1,  0,  0, 0,
-					0, ct2,-st2, 0, 
-					0, st2, ct2, 0,
-					0,  0,  0, 1 );		
+		//dedo corazón
+        r2.set( 	ct2, -st2,  0, 0,
+					st2, ct2,   0, 0, 
+					0,     0,   1, 0,
+					0,     0,   0, 1 );	
+        
        
-		 r3.set(     cso, 0, sso, 0,
+		 r3.set(    cso, 0, sso, 0,
                     0, 1, 0, 0, 
                     -sso, 0, cso, 0,
                     0, 0, 0, 1 );
-		//ROTACION EN UN EJE PARALELO
-	    var tempMatrix = new THREE.Matrix4();
-		tempMatrix.copyPosition( Brazo.matrix );
-        Brazo.applyMatrix( new THREE.Matrix4().getInverse(tempMatrix) );
-       
-		Brazo.applyMatrix(r);
-		Brazo.applyMatrix( tempMatrix );
+	// movimientos	
+ palma.applyMatrix(r);
+
         
-		Dedo_Corazon_2.applyMatrix(r7);
         
    
 
         
-        //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Corazon_2.matrix );
-        Dedo_Corazon_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+//ROTACION del dedo
+//var tempMatrixA = new THREE.Matrix4();
+//tempMatrixA.copyPosition( Dedo_Indice_2.matrix );
+//Dedo_Indice_2.applyMatrix( new THREE.Matrix4().getInverse(empMatrixA) );
         
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Corazon.matrix );
-        Dedo_Corazon.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
+Dedo_Indice_2.applyMatrix(r2);
+//Dedo_Indice.applyMatrix(r2);
+//Dedo_Corazon.applyMatrix(r2);
+Dedo_Corazon_2.applyMatrix(r2);
+//Dedo_Menique.applyMatrix(r2);
+Dedo_Menique_2.applyMatrix(r2);
+//Dedo_Pulgar.applyMatrix(r2);
+Dedo_Pulgar_2.applyMatrix(r2);
+//Dedo_Anular.applyMatrix(r2);
+Dedo_Anular_2.applyMatrix(r2);
         
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Anular.matrix );
-        Dedo_Anular.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Anular_2.matrix );
-        Dedo_Anular_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Indice.matrix );
-        Dedo_Indice_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Menique.matrix );
-        Dedo_Menique.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-      //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Menique_2.matrix );
-        Dedo_Menique_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Pulgar.matrix );
-        Dedo_Pulgar.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Pulgar_2.matrix );
-        Dedo_Pulgar_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-        //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Indice.matrix );
-        Dedo_Indice.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-     
-              
-     //ROTACION del brazo
-        var tempMatrixA = new THREE.Matrix4();
-        tempMatrixA.copyPosition( Dedo_Pulgar_2.matrix );
-        Dedo_Pulgar_2.applyMatrix(new THREE.Matrix4().getInverse(r2));//arriba abajo brazo
-        
-        //PARA MANO ROTACION
+  //PARA MANO ROTACION
        Dedo_Anular_2.applyMatrix(r3);
        Dedo_Anular.applyMatrix(r3);
        Dedo_Corazon.applyMatrix(r3);
@@ -558,7 +534,36 @@
        Dedo_Menique_2.applyMatrix(r3);
        Dedo_Pulgar.applyMatrix(r3);
        Dedo_Pulgar_2.applyMatrix(r3);
+        //Dedo_Indice_2.applyMatrix( tempMatrixA);
         
+        
+        
+/* var tempMatrixB = new THREE.Matrix4();
+tempMatrixA.copyPosition( Dedo_Corazon_2.matrix );
+Dedo_Corazon_2.applyMatrix( new THREE.Matrix4().getInverse(tempMatrixB) );
+Dedo_Corazon_2.applyMatrix(r2);
+Dedo_Corazon_2.applyMatrix( tempMatrixB);*/   
+      
+
+/*var tempMatrixC = new THREE.Matrix4();
+tempMatrixA.copyPosition( Dedo_Corazon_2.matrix );
+Dedo_Corazon_2.applyMatrix( new THREE.Matrix4().getInverse(tempMatrixC) );
+Dedo_Corazon_2.applyMatrix(r3);
+Dedo_Corazon_2.applyMatrix( tempMatrixC);*/
+        
+        
+     // Dedo_Anular_2.rotatey(45);
+        
+        
+        
+        
+       
+        
+        
+      
+        
+
+
 		//CAMARA ENFOCANDO ORIGEN
         camera.lookAt( 0, 0, 0 );
         renderer.render( scene, camera );
