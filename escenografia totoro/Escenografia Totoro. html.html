@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cubo en 3D y animación</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script src="js/three.min.js"></script>
+    <script>
+/*_________________________________________________________________*/
+                 var start = Date.now();
+  var size = 10;
+  var arrowSize = 5;
+  var divisions = 10;
+  var length = 10;
+ 
+  var x = new THREE.Vector3( 1, 0, 0 );
+  var y = new THREE.Vector3( 0, 1, 0 );
+  var z = new THREE.Vector3( 0, 0, 1 );
+  	var color1 = new THREE.Color( 0xFFFFFF );
+		  	var color2 = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA0000 );
+		  	var colorG = new THREE.Color( 0x00AA00 );
+		  	var colorB = new THREE.Color( 0x0000AA );
+            
+		  	var colorT = new THREE.Color( 0x7f7f81 );
+		  	var colorO = new THREE.Color( 0xfcfbea );
+		  	var colorF = new THREE.Color( 0x342905 );
+		  	var colorH = new THREE.Color( 0x000000 );
+		  	var colorV = new THREE.Color( 0x00a82d );      
+        
+        
+        
+        
+        
+/*________________________________________________________________*/     
+        
+           //Creación de la escena en la que se va a trabajar
+        var scene = new THREE.Scene();
+		//Definición de la relación de aspecto ASPECTO = ANCHO_VENTANA / ALTO_VENTANA
+        var aspect = window.innerWidth / window.innerHeight;
+		//Creacion de una cámara, en perspectiva
+        var camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000);
+		//Creación del elemento para el renderizado de la escena
+        var renderer = new THREE.WebGLRenderer();
+		//Definición del tamaño del elemento de renderizado
+        renderer.setSize( window.innerWidth, window.innerHeight );
+		//Inclusión del elemento de renderizado dentro del canvas de la página web
+        document.body.appendChild( renderer.domElement );
+        camera
+	
+/*_____________________________________________________________________*/       
+   
+     var color1 = new THREE.Color( 0xffffff );
+     var color2 = new THREE.Color( 0xffffff );   var color2 = new THREE.Color( 0xffffff  );
+       
+        var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );
+      //  scene.add( gridHelperXZ );
+       
+        var gridHelperXY = new THREE.GridHelper( size, divisions, color1, color1);
+        gridHelperXY.rotateOnWorldAxis( x, THREE.Math.degToRad(90) );  
+        //scene.add( gridHelperXY ); 
+        
+         var gridHelperYZ = new THREE.GridHelper( size, divisions, color1, color1);
+        gridHelperYZ.rotateOnWorldAxis( z, THREE.Math.degToRad(90) );  
+        //scene.add( gridHelperYZ );
+        
+            var ambient = new THREE.AmbientLight( 0x888888, 1 );
+            scene.add( ambient );
+            
+            var pointLight1 = new THREE.PointLight( 0x497645, .5, 100 );
+            pointLight1.position.set( 10, 5, -10 );
+            scene.add( pointLight1 );
+			
+			var pointLight2 = new THREE.PointLight( 0x497645, .5, 100 );
+            pointLight2.position.set( 10, 5,10  );
+            scene.add( pointLight2 );
+        
+        
+        
+/*_______________________________________________________________________*/       
+        
+        var origin = new THREE.Vector3( 0, 0, 0 );
+        
+        var dirX = new THREE.Vector3( 1, 0, 0 );
+        dirX.normalize();
+        var dirY = new THREE.Vector3( 0, 1, 0 );
+        dirY.normalize();
+        var dirZ = new THREE.Vector3( 0, 0, 1 );
+        dirZ.normalize();
+    var heX = 0xff0000;
+    var heY = 0x00ff0a;
+    var heZ = 0x1d00ff;
+       	var colorT = new THREE.Color( 0xa5a5a8 );
+        var arrowHelperX = new THREE.ArrowHelper( dirX, origin, length, heX );
+        scene.add( arrowHelperX );
+        
+        
+        var arrowHelperY = new THREE.ArrowHelper( dirY, origin, length, heY );
+        scene.add( arrowHelperY );
+        
+        var arrowHelperZ = new THREE.ArrowHelper( dirZ, origin, length, heZ );
+        scene.add( arrowHelperZ );   
+        
+  /*_____________________________________________________________________*/ 
+        
+          var points = [];
+            for ( var i = 0; i < 10; i ++ ) {
+                points.push( new THREE.Vector2( Math.cos( i * 0.2 ) * 1.1, ( i +10 ) * 0.2 ) );
+            }
+        
+        
+        
+         var geometry_suelo = new THREE.BoxGeometry(10, 0.25, 10 );
+            var geometry_pansa = new THREE.SphereBufferGeometry( 2, 10, 10 );
+            var geometry_ojos = new THREE.SphereBufferGeometry( 0.2, 10, 10 );
+            var geometry_ojos2 = new THREE.SphereBufferGeometry( 0.1, 10, 10 );
+            var geometry_nariz = new THREE.SphereBufferGeometry( 0.1, 10, 10 );
+            var geometry_cabeza = new THREE.SphereBufferGeometry( 1.2, 10, 10 );
+            var geometry_orejas = new THREE.SphereBufferGeometry( 0.2, 10, 10 );
+            var geometry_patas = new THREE.SphereBufferGeometry( 1, 10, 10 );
+            var geometry_brazos = new THREE.SphereBufferGeometry( 1, 10, 10 );
+            var geometry_poste = new THREE.CylinderBufferGeometry( 0.08, 0.08, 4, 50 );
+            var geometry_letrero = new THREE.CylinderBufferGeometry( 0.6, 0.6, 0.2, 50 );
+        
+              var geometry_blusa = new THREE.SphereBufferGeometry( 0.3, 0.3, 20 );
+            var geometry_falda = new THREE.CylinderBufferGeometry( 0.28, 0.5, 0.6, 50 );
+            var geometry_piernas = new THREE.CylinderBufferGeometry( 0.08, 0.08, 1, 50  );
+            var geometry_cabezan = new THREE.SphereBufferGeometry   ( 0.18, 0.2, 20 );
+            var geometry_sombrilla = new THREE.LatheBufferGeometry( points );
+        
+	 var material = new THREE.MeshStandardMaterial( { color: colorT, metalness: 0.2, roughness: 0.7} );  
+            var material1 = new THREE.MeshStandardMaterial( { color: colorO, metalness: 0.05, roughness: 0.4} );
+            var material2 = new THREE.MeshStandardMaterial( { color: colorF, metalness: 0.05, roughness: 0.9} ); 
+            var material3 = new THREE.MeshStandardMaterial( { color: colorH, metalness: 0.05, roughness: 0.9} );          
+            var material5 = new THREE.MeshStandardMaterial( { color: colorT, metalness:0.8, roughness: 0.9} );          
+            var material6 = new THREE.MeshStandardMaterial( { color: colorB, metalness: 0.6, roughness: 0.9} );          
+            var material4 = new THREE.MeshStandardMaterial( { color: colorV, metalness: 0.7, roughness: 0.1} );
+            var material7 = new THREE.MeshStandardMaterial( { color: 0xff8831, metalness: 0.2, roughness: 0.9} );
+            var material8 = new THREE.MeshStandardMaterial( { color: 0xffe731, metalness: 0.3, roughness: 0.9} );
+            var material9 = new THREE.MeshStandardMaterial( { color: 0xffdd9e, metalness: 0.1, roughness: 0.1} );
+            var material10 = new THREE.MeshBasicMaterial( { color: 0xbe002c, metalness: 0.9,roughness: 0.1 } );   
+        
+        
+         var suelo = new THREE.Mesh( geometry_suelo, material4 );
+            scene.add( suelo );
+                suelo.translateY(-2.5);
+            
+            //PANSA
+
+            var pansa = new THREE.Mesh( geometry_pansa, material );
+            scene.add( pansa );
+                
+                pansa.translateY(5);
+            
+            //CABEZA
+
+            var cabeza = new THREE.Mesh( geometry_cabeza, material );
+                
+                
+                var matrixT = new THREE.Matrix4();
+                matrixT.set( 0.8, 0, 0, 0,
+                             0, 1, 0, 1.5,
+                             0, 0, 1, 0,
+                             0, 0, 0, 1);
+
+                cabeza.applyMatrix(matrixT);
+             
+                pansa.add(cabeza);
+            
+            //NARIZ
+
+            var nariz = new THREE.Mesh( geometry_nariz, material2 );
+   
+                var matrixT5 = new THREE.Matrix4();
+                matrixT5.set( 1, 0, 0, 1,
+                             0, 1, 0, 0.5,
+                             0, 0, 1.4, 0,
+                             0, 0, 0, 1);
+
+                nariz.applyMatrix(matrixT5);
+                 cabeza.add( nariz );
+
+            //OJOS
+
+            var ojo1 = new THREE.Mesh( geometry_ojos, material1 );
+            cabeza.add( ojo1 );
+                
+                ojo1.translateY(0.6);
+                ojo1.translateX(0.7);
+                ojo1.translateZ(0.5);
+            
+            var ojo2 = new THREE.Mesh( geometry_ojos, material1 );
+            cabeza.add( ojo2 );
+                
+                ojo2.translateY(0.6);
+                ojo2.translateX(0.7);
+                ojo2.translateZ(-0.5);
+            //OJOS2
+
+            var ojo3 = new THREE.Mesh( geometry_ojos2, material3 );
+            cabeza.add( ojo3 );
+                
+                ojo3.translateY(0.65);
+                ojo3.translateX(0.8);
+                ojo3.translateZ(0.5);
+            
+            var ojo4 = new THREE.Mesh( geometry_ojos2, material3 );
+            cabeza.add( ojo4 );
+                
+                ojo4.translateY(0.65);
+                ojo4.translateX(0.8);
+                ojo4.translateZ(-0.5);
+            
+            //OREJAS
+
+            var oreja1 = new THREE.Mesh( geometry_orejas, material );
+            var oreja2 = new THREE.Mesh( geometry_orejas, material );
+            
+                var matrixT1 = new THREE.Matrix4();
+                matrixT1.set( 0.5, 0, 0, 0,
+                             0, 2.5, 0, 1,
+                             0, 0, 0.6, 0.6,
+                             0, 0, 0, 1);
+
+                oreja1.applyMatrix(matrixT1);  
+            
+            var matrixT2 = new THREE.Matrix4();
+                matrixT2.set( 0.5, 0, 0, 0,
+                             0, 2.5, 0, 1,
+                             0, 0, 0.6, -0.6,
+                             0, 0, 0, 1);
+
+                oreja2.applyMatrix(matrixT2);
+                
+                cabeza.add(oreja1);
+                cabeza.add(oreja2);
+  
+                
+            //PATAS
+
+            var pata1 = new THREE.Mesh( geometry_patas, material );
+                                
+                pata1.translateY(-1.2);
+                pata1.translateZ(0.5);
+                
+            pansa.add( pata1 ); 
+            
+            var pata2 = new THREE.Mesh( geometry_patas, material );
+                                
+                pata2.translateY(-1.2);
+                pata2.translateZ(-0.5);
+                
+            pansa.add( pata2 );
+            
+            //BRAZOS
+
+            var brazo1 = new THREE.Mesh( geometry_brazos, material );
+                                
+                 var matrixT3 = new THREE.Matrix4();
+			     matrixT3.set(0.6, 0, 0, 0,
+                              0, 1.2, 0, 0.2,
+                              0, 0, 1, -1.2,
+                              0, 0, 0, 1);
+                
+                 brazo1.applyMatrix(matrixT3);
+                 pansa.add( brazo1 ); 
+            
+            var brazo2 = new THREE.Mesh( geometry_brazos, material );
+                                
+               var matrixT4 = new THREE.Matrix4();
+			     matrixT4.set(0.6, 0, 0, 0,
+                              0, 1.2, 0, 0.2,
+                              0, 0, 1, 1.2,
+                              0, 0, 0, 1);
+                
+                 brazo2.applyMatrix(matrixT4);
+                 pansa.add( brazo2 ); 
+                
+ //OBJETOS SEÑAL//----------------------------
+              //PANSA
+
+            var poste = new THREE.Mesh( geometry_poste, material5 );
+            suelo.add( poste );
+                
+                poste.translateZ(4.5);
+                poste.translateY(2); 
+            //Letrero
+
+            var letrero = new THREE.Mesh( geometry_letrero, material6 );
+            poste.add( letrero );
+             letrero.rotateX(THREE.Math.degToRad(90));
+             letrero.rotateZ(THREE.Math.degToRad(90));
+             letrero.translateY(0);
+             letrero.translateZ(-2.37);
+        
+        
+   ///////////////////////////muñeca////////////////////////////////////////
+            //FALDA
+
+            var falda = new THREE.Mesh( geometry_falda, material7 );
+            scene.add( falda );
+                
+            falda.translateY(-1.2);
+            falda.translateZ(3.0);
+                
+            //BLUSA
+
+            var blusa = new THREE.Mesh( geometry_blusa, material8 );
+            falda.add( blusa );
+                
+                var matrixT6 = new THREE.Matrix4();
+                matrixT6.set(1.1, 0, 0,0,
+                             0, 2, 0, 0.6,
+                             0, 0, 1.1,0,
+                             0, 0, 0, 1);
+
+                blusa.applyMatrix(matrixT6);       
+            
+            //PIERNAS
+
+            var pierna1 = new THREE.Mesh( geometry_piernas, material9 );
+            falda.add( pierna1 );
+            
+            var pierna2 = new THREE.Mesh( geometry_piernas, material9 );
+            falda.add( pierna2 );
+            
+            pierna1.translateZ(0.2);
+            pierna2.translateZ(-0.2);   
+            pierna1.translateY(-0.5);
+            pierna2.translateY(-0.5);
+        
+            //CABEZA
+
+            var cabezan = new THREE.Mesh( geometry_cabezan, material9 );
+            blusa.add( cabezan );
+                
+            var matrixT8 = new THREE.Matrix4();
+			matrixT8.set(1.4, 0, 0, 0,
+						 0, 1/1.1, 0, 0.4,
+						 0, 0, 1, 0,
+						 0, 0, 0, 1);
+                
+            cabezan.applyMatrix(matrixT8);  
+
+            
+//SOMBRILLA//----------------------------
+           
+        var sombrilla = new THREE.Mesh( geometry_sombrilla, material10 );
+        scene.add( sombrilla );
+        sombrilla.translateZ(3);
+        sombrilla.translateX(1);
+        sombrilla.rotateZ(THREE.Math.degToRad(25)); ////////////////////////////////////////////////////////////////////////     
+        
+        
+        
+        
+        
+     
+		
+        camera. position.x = 6; 
+       camera. position.z =-1; 
+        camera.lookAt( origin );
+		
+       var render = function(){
+			
+		
+            requestAnimationFrame( render );
+			
+           
+           var timer = Date.now() - start;
+           
+        pansa.position.y = Math.sin(timer*0.002)*0.5;
+        sombrilla.position.y = Math.sin(timer*0.001)*0.5;
+        sombrilla.rotation.y = Math.sin(timer*0.001)*2;
+        camera.position.z = 1*Math.sin(timer/1000);
+      
+           
+           
+            renderer.render( scene, camera );
+        };
+        render();
+    </script>
+  </body>
+</html>
